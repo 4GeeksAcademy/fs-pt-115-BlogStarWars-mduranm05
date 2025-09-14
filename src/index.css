@@ -5,7 +5,7 @@
   overflow-x: auto;
   gap: 30px;
   padding: 20px;
-  scrollbar-color: var(--naranja-kamehameha) transparent;
+  scrollbar-color: transparent;
 }
 
 .slider-container::-webkit-scrollbar {

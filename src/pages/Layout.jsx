@@ -42,12 +42,12 @@ export const Layout = () => {
     }, []);
     return (
         <div className="d-flex flex-column min-vh-100">
-            <Navbar />
+            <Navbar/>
             <main className="flex-grow-1">
                 {/* Paso los datos cargados a mis páginas hijas. */}
                 <Outlet context={{ personajes, planetas, cargando }} />
             </main>
-            <Footer />
+            <Footer/>
         </div>
-    )
-}
+    );
+};
