@@ -1,26 +1,49 @@
-import logoImageUrl from "../assets/img/imgstarwars.png";
+import logoImageUrl from "../assets/img/LogoDragonBallZ.jpg";
 import { Link } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer";
+
 
 export const Navbar = () => {
+	const { store, dispatch } = useGlobalReducer();
+
+
 
 	return (
-		<nav className="navbar navbar-light bg-light">
-			<div className="container">
+		<nav className="navbar navbar-light bg-light mb-3 px-4 sticky-top">
+			<div className="container-fluid">
 				<Link to="/">
 					{/* <span className="navbar-brand mb-0 h1">React Boilerplate</span> */}
-					<img src={logoImageUrl} alt="logo starWars" />
+					<img 
+					src={logoImageUrl} 
+					alt="logo dragonBallZ" 
+					style={{ height: '50px' }}
+					/>
 				</Link>
 				<div className="ml-auto">
 					<Link to="/demo">
 						<div className="dropdown">
 							<button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-								Favorites <span className="badge text-bg-secondary">4</span>
+								Favorites <span className="badge text-bg-secondary">{store.favorites.length}</span>
 							</button>
-							{/* <ul class="dropdown-menu">
-								<li><a class="dropdown-item" href="#">Action</a></li>
-								<li><a class="dropdown-item" href="#">Another action</a></li>
-								<li><a class="dropdown-item" href="#">Something else here</a></li>
-							</ul> */}
+							<ul className="dropdown-menu dropdown-menu-end">
+								{store.favorites.length === 0 ? (
+									<li className="dropdown-item text-center">(Vacío)</li>
+								) : (
+									store.favorites.map((favorito) => (
+										<li key={`${favorito.type}-${favorito.id}`} className="dropdown-item d-flex justify-content-between align-items-center">
+											<Link to={`/${favorito.type}/${favorito.id}`} className="text-decoration-none text-dark">
+												{favorito.name}
+											</Link>
+											<button
+												className="btn btn-sm"
+												onClick={() => dispatch({ type: 'REMOVE_FAVORITE', payload: favorito })}
+											>
+												<i className="fas fa-trash text-danger"></i>
+											</button>
+										</li>
+									))
+								)}
+							</ul>
 						</div>
 					</Link>
 				</div>

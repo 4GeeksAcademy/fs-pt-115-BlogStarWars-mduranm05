@@ -1,27 +1,40 @@
-import { useState, useEffect } from "react"
+import React from 'react';
+import { Link } from 'react-router-dom';
+import useGlobalReducer from '../hooks/useGlobalReducer';
 
-const Card = ({info}) => {
-    const [cardData, setCardData]=useState({})
-   useEffect(() => {
-        fetch(info.url)
-            .then(res => res.json())
-            .then(data => setCardData(data.result.properties))
-            .catch(err => console.error(err))
-    }, [])
+export const Card = ({ item, type }) => {
+    // Me conecto a la store global para poder manejar los favoritos.
+    const { store, dispatch } = useGlobalReducer();
     
-    return (
-        <div className="card" style={{width: 250}}>
-            <img src="https://placehold.co/400x200" className="card-img-top" alt="..."/>
-                <div className="card-body">
-                    <h5 className="card-title">{info.name}</h5>
-                    <p className="card-text">gender: {cardData?.gender}</p>
-                    <p className="card-text">hair color: {cardData?.hair_color}</p>
-                    <p className="card-text">eye color: {cardData?.eye_color}</p>
-                    <a href="#" className="btn btn-outline-primary">Learn more!</a>
-                    <a href="#" className="btn btn-outline-warning"><i className="fa-regular fa-heart"></i></a>
-                </div>
-        </div>
-    )
-}
+    // Compruebo si este item ya está en mi lista de favoritos.
+    const esFavorito = store.favorites.some(fav => fav.id === item.id && fav.type === type);
 
-export default Card;
+    // La función que se ejecuta al pulsar el corazón.
+    const manejarClickFavorito = () => {
+        const payload = { ...item, type };
+        // Dependiendo de si ya es favorito, envío una orden (dispatch) para añadirlo o quitarlo.
+        if (esFavorito) {
+            dispatch({ type: 'REMOVE_FAVORITE', payload });
+        } else {
+            dispatch({ type: 'ADD_FAVORITE', payload });
+        }
+    };
+
+    return (
+        <div className="card">
+            <img src={item.image} className="card-img-top" alt={item.name} />
+            <div className="card-body d-flex flex-column">
+                <h5 className="card-title">{item.name}</h5>
+                <div className="d-flex justify-content-between mt-auto">
+                    {/* Uso el componente Link para navegar a la vista de detalle sin recargar la página. */}
+                    <Link to={`/${type}/${item.id}`} className="btn btn-outline-primary">
+                        Saber más
+                    </Link>
+                    <button className="btn btn-outline-warning" onClick={manejarClickFavorito}>
+                        <i className={`fa-heart ${esFavorito ? 'fas text-danger' : 'far'}`}></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};

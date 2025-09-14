@@ -1,0 +1,38 @@
+
+
+.slider-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 30px;
+  padding: 20px;
+  scrollbar-color: var(--naranja-kamehameha) transparent;
+}
+
+.slider-container::-webkit-scrollbar {
+  height: 12px;
+}
+
+.slider-container > .card {
+  flex-shrink: 0;
+  width: 290px;
+}
+
+.accordion-item {
+  border: none;
+  background: transparent;
+}
+
+.card-propiedad {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.card .card-img-top {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  object-position: center top;
+}
+

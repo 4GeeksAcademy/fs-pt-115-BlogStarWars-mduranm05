@@ -1,36 +1,50 @@
-import { useEffect, useState } from "react";
-import rigoImageUrl from "../assets/img/rigo-baby.jpg";
-import { CardsContainer } from "../components/CardsContainer.jsx";
-import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import React, { useState } from "react";
+import { useOutletContext } from "react-router-dom";
+import { Card } from "../components/Card.jsx";
 
 export const Home = () => {
+    // Recojo los datos que me pasa el componente Layout.
+    const { personajes, planetas, cargando } = useOutletContext() || {};
+    // Creo un estado local para el texto del buscador.
+    const [terminoBusqueda, setTerminoBusqueda] = useState("");
 
-	const { store, dispatch } = useGlobalReducer()
-	const [characters, setCharacters] = useState([])
-	const [planets, setPlanets] = useState([])
-	const [vehicles, setVehicles] = useState([])
-	useEffect(() => {
+    // Filtro mis listas de personajes y planetas en tiempo real.
+    const personajesFiltrados = personajes.filter(p =>
+        p.name.toLowerCase().includes(terminoBusqueda.toLowerCase())
+    );
+    const planetasFiltrados = planetas.filter(p =>
+        p.name.toLowerCase().includes(terminoBusqueda.toLowerCase())
+    );
 
-		fetch("https://www.swapi.tech/api/people")
-			.then(res => res.json())
-			.then(data => setCharacters(data.results))
-			.catch(err => console.error(err))
+    // Muestro un mensaje mientras los datos se están cargando.
+    if (cargando) {
+        return <div className="text-center mt-5"><h3>Buscando las Esferas del Dragón...</h3></div>;
+    }
 
-		fetch("https://www.swapi.tech/api/planets")
-			.then(res => res.json())
-			.then(data => setPlanets(data.results))
-			.catch(err => console.error(err))
+    return (
+        <div className="container mt-5">
 
-		fetch("https://www.swapi.tech/api/vehicles")
-			.then(res => res.json())
-			.then(data => setVehicles(data.results))
-			.catch(err => console.error(err))
-	}, [])
-	return (
-		<div className="text-left mt-5">
-			<CardsContainer title="Characters" cardsArray={characters} />
-			<CardsContainer title="Planets" cardsArray={planets} />
-			<CardsContainer title="Vehicles" cardsArray={vehicles} />
-		</div>
-	);
-}; 
+            <h2 className="text-primary">Personajes</h2>
+            <div className="slider-container pb-3">
+                {personajesFiltrados.length > 0 ? (
+                    personajesFiltrados.map(personaje => (
+                        <Card key={personaje.id} item={personaje} type="characters" />
+                    ))
+                ) : (
+                    <p className="w-100 text-center">No he encontrado personajes con ese nombre.</p>
+                )}
+            </div>
+
+            <h2 className="text-primary espacio-superior-grande">Planetas</h2>
+            <div className="slider-container pb-3">
+                {planetasFiltrados.length > 0 ? (
+                    planetasFiltrados.map(planeta => (
+                        <Card key={planeta.id} item={planeta} type="planets" />
+                    ))
+                ) : (
+                    <p className="w-100 text-center">No he encontrado planetas con ese nombre.</p>
+                )}
+            </div>
+        </div>
+    );
+};
